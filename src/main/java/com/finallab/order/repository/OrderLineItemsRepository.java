@@ -17,4 +17,6 @@ public interface OrderLineItemsRepository extends JpaRepository<OrderLineItems, 
 
     List<OrderLineItems> getOrderLineItemsByProductId(Long productId);
 
+    void deleteOrderLineItemsById(Long orderLineItemId);
+
 }

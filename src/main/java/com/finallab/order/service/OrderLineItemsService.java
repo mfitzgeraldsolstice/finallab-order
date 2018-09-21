@@ -32,11 +32,14 @@ public class OrderLineItemsService {
         return savedOrderLineItem;
     }
 
-    public void delete(OrderLineItems orderLineItems){
-        ShipmentResult shipmentToUpdate = shipmentService.getShipment(orderLineItems.getShipmentId());
-        shipmentToUpdate.setOrderLineItem(null);
-        shipmentService.update(shipmentToUpdate);
-        orderLineItemsRepository.delete(orderLineItems);
+    public void delete(Long orderLineItemId){
+        OrderLineItems temp = getOrderLineItemsById(orderLineItemId);
+        if(temp.getShipmentId() != null){
+            ShipmentResult shipmentToUpdate = shipmentService.getShipment(temp.getShipmentId());
+            shipmentToUpdate.setOrderLineItem(null);
+            shipmentService.update(shipmentToUpdate);
+        }
+        orderLineItemsRepository.deleteOrderLineItemsById(orderLineItemId);
     }
 
     public OrderLineItems updateOrderLineItems(OrderLineItems orderLineItems){

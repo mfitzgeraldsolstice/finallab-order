@@ -1,5 +1,6 @@
 package com.finallab.order.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.finallab.order.summary.AccountResult;
 import com.finallab.order.summary.AddressResult;
 import com.finallab.order.summary.OrderDetails;
@@ -87,14 +88,15 @@ public class Orders {
     private Long addressId;
 
     //@JsonManagedReference(value="orderLineItems")
-    @JoinColumn(name = "orderId")
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<OrderLineItems> orderLineItems;
+    //@JoinColumn(name = "orderId")
+    //@JsonIgnoreProperties
+    //@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Long orderLineItems;
 
     public Orders() {
     }
 
-    public Orders(Long accountId, Long orderNumber, Date orderDate, Long addressId, List<OrderLineItems> orderLineItems) {
+    public Orders(Long accountId, Long orderNumber, Date orderDate, Long addressId, Long orderLineItems) {
         this.accountId = accountId;
         this.orderNumber = orderNumber;
         this.orderDate = orderDate;
@@ -142,11 +144,11 @@ public class Orders {
         this.addressId = addressId;
     }
 
-    public List<OrderLineItems> getOrderLineItems() {
+    public Long getOrderLineItems() {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(List<OrderLineItems> orderLineItems) {
+    public void setOrderLineItems(Long orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
 }

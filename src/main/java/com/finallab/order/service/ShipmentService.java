@@ -17,7 +17,7 @@ public interface ShipmentService {
     @RequestMapping(method = RequestMethod.GET, value="/{id}")
     ShipmentResult getShipment(@PathVariable("id") Long id);
 
-    @RequestMapping(method = RequestMethod.GET, value="/account/{accountId}")
+    @RequestMapping(method = RequestMethod.GET, value="/shipments/{accountId}")
     List<ShipmentResult> getShipmentsByAccountId(@PathVariable("accountId") Long id);
 
     @PutMapping("/update")

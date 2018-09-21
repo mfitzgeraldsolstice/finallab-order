@@ -54,7 +54,6 @@ public class OrderService {
 
     public Orders save(Orders orders){
         Orders orderSaved = ordersRepository.save(orders);
-
         return orderSaved;
     }
 
@@ -70,10 +69,9 @@ public class OrderService {
     public List<OrderDetails> getOrderDetailsForAccount(Long accountId) throws URISyntaxException {
         List<ShipmentResult> shipments = getShipments(accountId);
         AddressResult address = getAddressInfo(accountId);
-        AccountResult account = getAccountInfo(accountId);
         List<Orders> orders = getOrdersByAccountId(accountId);
 
-        HashMap<Long, List<OrderLineItems>> lineItemsByOrder = new HashMap<>();
+        HashMap<Long, Long> lineItemsByOrder = new HashMap<>();
         for(int i = 0; i < orders.size(); i++){
             lineItemsByOrder.put(orders.get(i).getId(), orders.get(i).getOrderLineItems());
         }
@@ -104,18 +102,9 @@ public class OrderService {
             temp.setCountry(address.getCountry());
             temp.setZipcode(address.getZipcode());
             temp.setOrderNumber(orders.get(i).getOrderNumber());
-            //temp.setLineItems(shipments.get());
-
-            List<ShipmentResult> orderShipments = new ArrayList<>();
-            /*for(int j = 0; j < shipments.size(); j++){
-                for(int k = 0; k < j; k++){
-                    if(shipments.get(i).getOrderLineItems().getOrderId() == orders.get(i).getId()){
-                        orderShipments.add(shipments.get(i));
-                    }
-                }
-            }*/
+            temp.setLineItems(lineItems);
             temp.setShipments(shipments);
-            temp.setProduct(productResults);
+            temp.setProducts(productResults);
 
             orderDetails.add(temp);
 

@@ -14,7 +14,6 @@ public class OrderDetails {
 
     private Long account_id;
     private Long orderNumber;
-    private String product_name;
 //    private String product_description;
 //    private Double product_price;
 //    private Double product_quantity;
@@ -26,20 +25,17 @@ public class OrderDetails {
     private String street;
     private String zipcode;
     private List<ShipmentResult> shipments;
-    private Date shippedDate;
-    private Date deliveryDate;
     private List<OrderLineItems> lineItems;
     private List<ProductResult> products;
 
     public OrderDetails() {
     }
 
-    public OrderDetails(Long account_id, Long orderNumber, String product_name, String apt_number, String city,
-                        String country, String state, String street, String zipcode, List<ShipmentResult> shipments,
-                        Date shippedDate, Date deliveryDate, List<OrderLineItems> lineItems, List<ProductResult> products) {
+    public OrderDetails(Long account_id, Long orderNumber, String apt_number, String city, String country,
+                        String state, String street, String zipcode, List<ShipmentResult> shipments,
+                        List<OrderLineItems> lineItems, List<ProductResult> products) {
         this.account_id = account_id;
         this.orderNumber = orderNumber;
-        this.product_name = product_name;
         this.apt_number = apt_number;
         this.city = city;
         this.country = country;
@@ -47,8 +43,6 @@ public class OrderDetails {
         this.street = street;
         this.zipcode = zipcode;
         this.shipments = shipments;
-        this.shippedDate = shippedDate;
-        this.deliveryDate = deliveryDate;
         this.lineItems = lineItems;
         this.products = products;
     }
@@ -67,14 +61,6 @@ public class OrderDetails {
 
     public void setOrderNumber(Long orderNumber) {
         this.orderNumber = orderNumber;
-    }
-
-    public String getProduct_name() {
-        return product_name;
-    }
-
-    public void setProduct_name(String product_name) {
-        this.product_name = product_name;
     }
 
     public String getApt_number() {
@@ -133,22 +119,6 @@ public class OrderDetails {
         this.shipments = shipments;
     }
 
-    public Date getShippedDate() {
-        return shippedDate;
-    }
-
-    public void setShippedDate(Date shippedDate) {
-        this.shippedDate = shippedDate;
-    }
-
-    public Date getDeliveryDate() {
-        return deliveryDate;
-    }
-
-    public void setDeliveryDate(Date deliveryDate) {
-        this.deliveryDate = deliveryDate;
-    }
-
     public List<OrderLineItems> getLineItems() {
         return lineItems;
     }
@@ -161,7 +131,7 @@ public class OrderDetails {
         return products;
     }
 
-    public void setProduct(List<ProductResult> products) {
+    public void setProducts(List<ProductResult> products) {
         this.products = products;
     }
 }

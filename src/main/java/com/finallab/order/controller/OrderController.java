@@ -5,6 +5,10 @@ import com.finallab.order.repository.OrdersRepository;
 import com.finallab.order.service.OrderService;
 import com.finallab.order.service.ShipmentService;
 import com.finallab.order.summary.*;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import org.aspectj.weaver.ast.Or;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Resource;
@@ -17,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.persistence.criteria.Order;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +29,8 @@ import java.util.List;
 @RestController
 @RequestMapping("")
 public class OrderController {
+
+    Logger logger = LoggerFactory.getLogger("OrderController");
 
     private String accountUrl;
     private OrderService orderService;
@@ -38,12 +45,14 @@ public class OrderController {
     }
 
     @PostMapping("/orders")
+    @HystrixCommand(fallbackMethod = "saveOrdersFallback")
     public Orders save(@RequestBody Orders order){
         Orders savedOrder = orderService.save(order);
         return savedOrder;
     }
 
     @GetMapping("/orders/{accountId}/summary")
+    @HystrixCommand(fallbackMethod = "getOrdersForAccountSummaryFallback")
     public OrdersForAccountSummary getOrdersForAccountSummary(@PathVariable("accountId") Long accountId) throws URISyntaxException {
         System.out.println("in endpoint");
         HashMap<Long, Date> results = orderService.getOrdersByAccount(accountId);
@@ -56,45 +65,37 @@ public class OrderController {
     }
 
     @GetMapping("/orders/{accountId}")
+    @HystrixCommand(fallbackMethod = "getOrdersForAccountFallback")
     public List<Orders> getOrdersForAccount(@PathVariable("accountId") Long accountId){
         List<Orders> results = orderService.getOrdersByAccountId(accountId);
         return results;
     }
 
     @GetMapping("/orders/{accountId}/details")
+    //@HystrixCommand(fallbackMethod = "getOrderDetailsForAccountFallback")
     public List<OrderDetails> getOrderDetailsForAccount(@PathVariable("accountId") Long accountId) throws URISyntaxException {
         List<OrderDetails> results = orderService.getOrderDetailsForAccount(accountId);
         return results;
-
     }
 
-    /*@GetMapping("/orders{accountId}")
-    public OrderDetails getOrderDetails(@RequestBody Orders order) throws URISyntaxException {
+    public Orders saveOrdersFallback(Orders orders){
+        logger.error("Error saving order: " + orders);
+        return new Orders();
+    }
 
+    public OrdersForAccountSummary getOrdersForAccountSummaryFallback(Long accountId){
+        logger.error("Error getting orders for account summary: " + accountId);
+        return new OrdersForAccountSummary();
+    }
 
+    public List<Orders> getOrdersForAccountFallback(Long accountId){
+        logger.error("Error getting orders for account: " + accountId);
+        return new ArrayList<>();
+    }
 
-        ParameterizedTypeReference<Resource<AccountResult>> emp = new ParameterizedTypeReference<Resource<AccountResult>>() {};
-        ResponseEntity<Resource<AccountResult>> accountResponse = restTemplate.exchange(
-                RequestEntity.get(new URI(url + order.getAccountId()))
-                        .build(),
-                emp
-        );
-
-
-
-        assert response != null;
-        Long symbolID;
-        if(response.getStatusCode() == HttpStatus.OK){
-            SymbolResult symbol = response.getBody().getContent();
-            System.out.println(symbol.getSymbolID() + symbol.getName());
-            assert symbol != null;
-            symbolID = symbol.getSymbolID();
-        } else
-            symbolID = null;
-
-        Long stockId = symbolID;
-
-        AggregateQuote result = quoteRepository.findMaxPrice(date, stockId);
-    }*/
+//    public List<OrderDetails> getOrderDetailsForAccountFallback(Long accountId){
+//        logger.error("Error getting order details for account: " + accountId);
+//        return new ArrayList<>();
+//    }
 
 }
